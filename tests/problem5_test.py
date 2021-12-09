@@ -1,5 +1,5 @@
 from problem5 import (
-    solve_part1,
+    solve,
 )
 from typing import List
 
@@ -19,4 +19,8 @@ provided_example = [
 
 
 def test_problem5_part1() -> None:
-    assert solve_part1(provided_example) == 5
+    assert solve(provided_example, consider_diagonals=False) == 5
+
+
+def test_problem5_part2() -> None:
+    assert solve(provided_example, consider_diagonals=True) == 12

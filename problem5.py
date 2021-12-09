@@ -10,7 +10,7 @@ import re
 from typing import List
 
 
-def solve_part1(input_lines: List[str]) -> int:
+def solve(input_lines: List[str], consider_diagonals: bool) -> int:
     lines = [Line.from_string(input_line) for input_line in input_lines]
 
     width = height = 0
@@ -20,7 +20,7 @@ def solve_part1(input_lines: List[str]) -> int:
 
     floor = OceanFloor(width=width + 1, height=height + 1)
     for line in lines:
-        floor.add_line(line)
+        floor.add_line(line, consider_diagonals=consider_diagonals)
 
     return floor.get_num_overlaps()
 
@@ -62,18 +62,29 @@ class OceanFloor:
         self.height = height
         self.matrix = [[0 for x in range(self.width)] for y in range(self.height)]
 
-    def add_line(self, line: Line) -> None:
+    def add_line(self, line: Line, consider_diagonals: bool) -> None:
         if line.is_horizontal:
             for y in range(
                 min(line.start.y, line.end.y), max(line.start.y, line.end.y) + 1
             ):
                 self.inc(line.start.x, y)
-
-        if line.is_vertical:
+        elif line.is_vertical:
             for x in range(
                 min(line.start.x, line.end.x), max(line.start.x, line.end.x) + 1
             ):
                 self.inc(x, line.start.y)
+        elif consider_diagonals:
+            if abs(line.start.x - line.end.x) != abs(line.start.y - line.end.y):
+                raise ValueError("Lines with slope other than 1 not supported")
+
+            x_step = 1 if line.end.x > line.start.x else -1
+            y_step = 1 if line.end.y > line.start.y else -1
+            x = line.start.x
+            y = line.start.y
+            for _ in range(abs(line.start.x - line.end.x) + 1):
+                self.inc(x, y)
+                x += x_step
+                y += y_step
 
     def get_num_overlaps(self) -> int:
         sum = 0
@@ -104,7 +115,9 @@ if __name__ == "__main__":
         filtered_lines = list(filter(lambda line: bool(line), lines))
 
     if args.part == 1:
-        output = solve_part1(filtered_lines)
+        output = solve(filtered_lines, consider_diagonals=False)
+    elif args.part == 2:
+        output = solve(filtered_lines, consider_diagonals=True)
     else:
         raise ValueError("Unknown part")
 
