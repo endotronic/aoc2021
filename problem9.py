@@ -5,13 +5,22 @@ Problem: 9
 """
 
 import argparse
-from typing import List, Tuple
+from math import prod
+from typing import List, Set, Tuple
 
 
 def solve_part1(lines: List[str]) -> int:
     cave = Cave([[int(val) for val in line] for line in lines])
     low_points = cave.get_low_points()
     return sum([cave.risk_level_at(x, y) for (x, y) in low_points])
+
+
+def solve_part2(lines: List[str]) -> int:
+    cave = Cave([[int(val) for val in line] for line in lines])
+    low_points = cave.get_low_points()
+    basin_sizes = [cave.get_basin_size_at(x, y) for (x, y) in low_points]
+    basin_sizes.sort(reverse=True)
+    return prod(basin_sizes[0:3])
 
 
 class Cave:
@@ -27,18 +36,42 @@ class Cave:
 
         return low_points
 
-    def get_neighbor_values(self, x: int, y: int) -> List[int]:
-        neighbor_values = []  # type: List[int]
-        if x > 0:
-            neighbor_values.append(self.value_at(x - 1, y))
-        if x < self.width - 1:
-            neighbor_values.append(self.value_at(x + 1, y))
-        if y > 0:
-            neighbor_values.append(self.value_at(x, y - 1))
-        if y < self.height - 1:
-            neighbor_values.append(self.value_at(x, y + 1))
+    def get_basin_size_at(self, x: int, y: int) -> int:
+        checked_points = set()  # type: Set[Tuple[int, int]]
+        points_to_check = {(x, y)}
 
-        return neighbor_values
+        while len(points_to_check) > 0:
+            x, y = points_to_check.pop()
+            checked_points.add((x, y))
+            neighbors = self.get_open_neighbors_at(x, y)
+            for nx, ny in neighbors:
+                if (nx, ny) not in checked_points:
+                    points_to_check.add((nx, ny))
+
+        return len(checked_points)
+
+    def get_neighbors_at(self, x: int, y: int) -> List[Tuple[int, int]]:
+        neighbors = []  # type: List[Tuple[int, int]]
+        if x > 0:
+            neighbors.append((x - 1, y))
+        if x < self.width - 1:
+            neighbors.append((x + 1, y))
+        if y > 0:
+            neighbors.append((x, y - 1))
+        if y < self.height - 1:
+            neighbors.append((x, y + 1))
+
+        return neighbors
+
+    def get_open_neighbors_at(self, x: int, y: int) -> List[Tuple[int, int]]:
+        return [
+            (nx, ny)
+            for (nx, ny) in self.get_neighbors_at(x, y)
+            if self.value_at(nx, ny) != 9
+        ]
+
+    def get_neighbor_values(self, x: int, y: int) -> List[int]:
+        return [self.value_at(nx, ny) for (nx, ny) in self.get_neighbors_at(x, y)]
 
     def is_low_point(self, x: int, y: int) -> bool:
         return min(self.get_neighbor_values(x, y)) > self.value_at(x, y)
@@ -72,6 +105,8 @@ if __name__ == "__main__":
 
     if args.part == 1:
         output = solve_part1(filtered_lines)
+    elif args.part == 2:
+        output = solve_part2(filtered_lines)
     else:
         raise ValueError("Unknown part")
 

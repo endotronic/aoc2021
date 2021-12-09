@@ -1,7 +1,7 @@
 from problem9 import (
     solve_part1,
+    solve_part2,
 )
-from typing import List
 
 
 provided_example = [
@@ -10,8 +10,12 @@ provided_example = [
     "9856789892",
     "8767896789",
     "9899965678",
-]  # type: List[str]
+]
 
 
 def test_problem9_part1() -> None:
     assert solve_part1(provided_example) == 15
+
+
+def test_problem9_part2() -> None:
+    assert solve_part2(provided_example) == 1134
