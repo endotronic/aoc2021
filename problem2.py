@@ -49,16 +49,18 @@ def solve_part2(moves: List[str]) -> int:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Advent of Code 2021, problem 2")
-    parser.add_argument("input_file", help="path to input file", default="input2.txt")
-    parser.add_argument("part", help="part (1|2)")
+    parser.add_argument(
+        "-i", "--input_file", help="path to input file", default="input/problem2.txt"
+    )
+    parser.add_argument("part", help="part (1|2)", type=int)
     args = parser.parse_args()
 
     with open(args.input_file, "r") as file:
         moves = file.readlines()
 
-    if args.part == "1":
+    if args.part == 1:
         output = solve_part1(moves)
-    elif args.part == "2":
+    elif args.part == 2:
         output = solve_part2(moves)
     else:
         raise ValueError("Unknown part")
