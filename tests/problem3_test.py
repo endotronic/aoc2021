@@ -1,4 +1,11 @@
-from problem3 import get_sums, get_gamma_and_epsilon, solve
+from problem3 import (
+    get_sums,
+    get_gamma_and_epsilon,
+    solve_part1,
+    get_oxygen_generator_rating,
+    get_co2_scrubber_rating,
+    solve_part2,
+)
 
 
 provided_example = [
@@ -28,4 +35,16 @@ def test_get_gamma_and_epsilon() -> None:
 
 
 def test_problem3_part1() -> None:
-    assert solve(provided_example) == 198
+    assert solve_part1(provided_example) == 198
+
+
+def test_get_oxygen_generator_rating() -> None:
+    assert get_oxygen_generator_rating(provided_example) == 23
+
+
+def test_get_co2_scrubber_rating() -> None:
+    assert get_co2_scrubber_rating(provided_example) == 10
+
+
+def test_problem3_part2() -> None:
+    assert solve_part2(provided_example) == 230
