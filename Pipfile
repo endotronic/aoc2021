@@ -3,6 +3,9 @@ url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
+[packages]
+attrs = "*"
+
 [dev-packages]
 mypy = "*"
 black = "==21.9b0"
