@@ -7,18 +7,28 @@ Problem: 6
 import argparse
 from typing import List
 
+MAX_FISH_COUNTER = 9
+
 
 def solve(initial_state: str, num_days: int) -> int:
-    fish = [int(f) for f in initial_state.split(",")]
-    for _ in range(num_days):
-        num_fish = len(fish)
-        for i in range(num_fish):
-            fish[i] -= 1
-            if fish[i] < 0:
-                fish[i] = 6
-                fish.append(8)
+    num_fish_by_day = [0 for _ in range(MAX_FISH_COUNTER)]
+    for days in [int(f) for f in initial_state.split(",")]:
+        num_fish_by_day[days] += 1
 
-    return len(fish)
+    for _ in range(num_days):
+        cycled_count = num_fish_by_day[0]
+        num_fish_by_day = num_fish_by_day[1:MAX_FISH_COUNTER] + [0]
+        num_fish_by_day[6] += cycled_count
+        num_fish_by_day[8] += cycled_count
+
+    return sum(num_fish_by_day)
+
+
+def rotate_array(arr: List[int]) -> List[int]:
+    if not arr:
+        return []
+    n = len(arr)
+    return arr[1:n] + [arr[0]]
 
 
 if __name__ == "__main__":
