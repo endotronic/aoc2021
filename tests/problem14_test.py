@@ -1,8 +1,8 @@
 from problem14 import (
-    solve_part1,
-    solve_part2,
+    solve,
+    solve_v2,
     parse_input,
-    do_iterations,
+    do_iterations_v1,
 )
 from typing import List
 
@@ -33,9 +33,9 @@ CN -> C
 
 def test_problem14_iterations() -> None:
     start, insertions = parse_input(provided_example)
-    assert len(do_iterations(start, insertions, iterations=5)) == 97
+    assert len(do_iterations_v1(start, insertions, iterations=5)) == 97
 
-    result = do_iterations(start, insertions, iterations=10)
+    result = do_iterations_v1(start, insertions, iterations=10)
     assert len(result) == 3073
     assert result.count("B") == 1749
     assert result.count("C") == 298
@@ -44,8 +44,9 @@ def test_problem14_iterations() -> None:
 
 
 def test_problem14_part1() -> None:
-    assert solve_part1(provided_example) == 1588
+    assert solve(provided_example, iterations=10) == 1588
+    assert solve_v2(provided_example, iterations=10) == 1588
 
 
 def test_problem14_part2() -> None:
-    assert solve_part2(provided_example) == 2188189693529
+    assert solve_v2(provided_example, iterations=40) == 2188189693529
